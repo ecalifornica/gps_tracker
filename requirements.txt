@@ -1,0 +1,4 @@
+Adafruit-BBIO==0.0.30
+pynmea2==1.5.2
+pyserial==3.0.1
+wheel==0.24.0
