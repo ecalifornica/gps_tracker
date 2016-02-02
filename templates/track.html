@@ -1,0 +1,32 @@
+<!doctype html>
+<head>
+ <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+ <style>
+#barf {
+    height: 500px;
+}
+ </style>
+</head>
+<body>
+<div id="barf"></div>
+<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+<script>
+var map = L.map('barf').setView([37.776805, -122.437958333], 18);
+L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+    maxZoom: 18,
+    accessToken: 'pk.eyJ1IjoiYmFyZmFyZWxsYSIsImEiOiJjaWsyOWwzNnUwM2NrdWdtMDJyeHdqNGp6In0.0zCIY3ieVBWZu5NqbcF-_w',
+    id: 'barfarella.p21j5h6d'
+}).addTo(map);
+var mylines = [{
+'type': 'LineString',
+'coordinates': 
+{{ coords }}
+}];
+L.geoJson(mylines).addTo(map);
+</script>
+<!--    
+<iframe width='100%' height='500px' frameBorder='0' src='https://a.tiles.mapbox.com/v4/barfarella.p21j5h6d/attribution,zoompan,zoomwheel,geocoder,share.html?access_token=pk.eyJ1IjoiYmFyZmFyZWxsYSIsImEiOiJjaWsyOWwzNnUwM2NrdWdtMDJyeHdqNGp6In0.0zCIY3ieVBWZu5NqbcF-_w'></iframe>
+-->
+</body>
+</html>

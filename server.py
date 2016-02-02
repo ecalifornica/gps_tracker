@@ -29,7 +29,12 @@ def coordinate_upload():
 
 @app.route('/track')
 def track():
-    return render_template('track.html')
+    db_result = collection.find().sort('timestamp', pymongo.DESCENDING).limit(20)
+    coords = []
+    for i in db_result:
+        coords.append(i['coord'])
+
+    return render_template('track.html', coords=coords)
 
 
 if __name__ == '__main__':
