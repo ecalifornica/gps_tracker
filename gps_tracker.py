@@ -1,4 +1,3 @@
-import json
 import serial
 import time
 
@@ -25,10 +24,12 @@ def upload_track():
         for line in fh:
             data = line.split(',')
             payload[data[0]] = [data[1], data[2]]
-    with open('/var/tmp/gps_track.txt', 'w') as fh:
+    try:
+        requests.post(config.API_URL, json=payload)
+        with open('/var/tmp/gps_track.txt', 'w') as fh:
+            pass
+    except:
         pass
-    r = requests.post(config.API_URL, json=payload)
-    
 
 
 if __name__ == '__main__':
@@ -36,9 +37,9 @@ if __name__ == '__main__':
     while True:
         ts, lat, lon = read_gps()
         with open('/var/tmp/gps_track.txt', 'a+') as fh:
-            #print(ts.isoformat(), lat, lon)
+            # print(ts.isoformat(), lat, lon)
             fh.write('{},{},{}\n'.format(ts.isoformat(), lat, lon))
-        if time.time() - last_upload > 60:
+        if time.time() - last_upload > 55:
             upload_track()
             last_upload = time.time()
         time.sleep(9)
