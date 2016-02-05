@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask import Flask, request, render_template
 import pymongo
@@ -33,10 +33,10 @@ def coordinate_upload():
 
 @app.route('/track')
 def track():
+    ts_cutoff = datetime.utcnow() - timedelta(hours=1)
     db_result = (collection
-                 .find()
-                 .sort('timestamp', pymongo.DESCENDING)
-                 .limit(360))
+                 .find({'timestamp': {'$gte': ts_cutoff}})
+                 .sort('timestamp', pymongo.DESCENDING))
     coords = []
     for i in db_result:
         print(i)
