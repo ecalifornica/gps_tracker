@@ -1,0 +1,89 @@
+=============
+LINKS
+=============
+http://elinux.org/Beagleboard:BeagleBoneBlack_Debian#Debian_Releases
+http://beagleboard.org/latest-images
+https://learn.adafruit.com/beaglebone-black-installing-operating-systems
+http://elinux.org/Beagleboard:Cape_Expansion_Headers
+https://www.linode.com/docs/getting-started
+https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-14-04
+
+==============
+UBUNTU ON BBB
+==============
+Download image:
+http://elinux.org/BeagleBoardUbuntu#BeagleBone_White.2FBlack.2FGreen
+shasum -a 256 bone-etc.img.xz
+
+Disk name:
+df -h
+
+Unmount:
+sudo diskutil unmount /dev/disk3s1
+
+Burn:
+sudo dd bs=1m if=~/Projects/2016/BBB/bone-ubuntu-14.04.3-console-armhf-2016-02-11-2gb.img of=/dev/rdisk3
+
+Mount SD Card:
+fdisk -l
+sudo mkdir /mnt/sd_card
+sudo mount /dev/sda2 /mnt/sd_card
+
+
+Set up Ubuntu
+=============
+ssh ubuntu@192.168.7.2
+
+Expand filesystem:
+sudo /opt/scripts/tools/grow_partition.sh
+sudo shutdown -r now
+
+Add user:
+sudo adduser UserName
+sudo gpasswd -a ecal sudo
+
+Change sshd keys:
+sudo rm -v /etc/ssh/ssh_host_*
+sudo dpkg-reconfigure openssh-server
+
+Copy ssh public key:
+scp .ssh/bbb_key.pub ubuntu@192.168.7.2:
+sudo su ecal
+mkdir /home/ecal/.ssh
+chmod 700 /home/ecal/.ssh
+cp /home/ubuntu/bbb.pub /home/ecal/.ssh/authorized_keys
+chmod 600 /home/ecal/.ssh/authorized_keys
+
+SSHD config:
+sudo vi /etc/ssh/sshd_config
+PermitRootLogin no
+PasswordAuthentication no
+
+Hostname:
+sudo su
+echo "Hostname" > /etc/hostname
+hostname -F /etc/hostname
+vi /etc/hosts
+
+Reboot, ssh as new user:
+sudo deluser ubuntu
+sudo vi /etc/network/interfaces
+sudo ifdown wlan0
+sudo ifup wlan0
+
+sudo apt-key update
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install fail2ban ntp tmux ufw vim
+sudo ufw allow ssh
+sudo ufw enable
+sudo ufw status verbose
+udo dpkg-reconfigure tzdata
+git clone Dotfiles
+
+
+===========
+NOTES
+===========
+wifi reset systemd service adafruit?
+bbb image service instead of systemd?
