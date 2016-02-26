@@ -1,5 +1,5 @@
 flake8==2.5.2
-Adafruit-BBIO==0.0.30
+Adafruit-BBIO
 Flask==0.10.1
 itsdangerous==0.24
 Jinja2==2.8
