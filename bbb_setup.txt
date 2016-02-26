@@ -23,6 +23,7 @@ sudo diskutil unmount /dev/disk3s1
 
 Burn:
 sudo dd bs=1m if=~/Projects/2016/BBB/bone-ubuntu-14.04.3-console-armhf-2016-02-11-2gb.img of=/dev/rdisk3
+# Ctrl+t shows progress of dd 
 
 Mount SD Card:
 fdisk -l
@@ -64,6 +65,8 @@ sudo su
 echo "Hostname" > /etc/hostname
 hostname -F /etc/hostname
 vi /etc/hosts
+#vi /etc/issue
+#vi /etc/update-motd.d/
 
 Reboot, ssh as new user:
 sudo deluser ubuntu
@@ -74,16 +77,61 @@ sudo ifup wlan0
 sudo apt-key update
 sudo apt-get update
 sudo apt-get upgrade
-sudo apt-get install fail2ban ntp tmux ufw vim
+sudo apt-get install fail2ban ntp tmux ufw vim build-essential python-dev ppp screen
 sudo ufw allow ssh
 sudo ufw enable
 sudo ufw status verbose
 udo dpkg-reconfigure tzdata
 git clone Dotfiles
 
+Need to clone this sooner, probably before apt steps. 
+
+==================
+SETTING UP GPS/GSM
+==================
+sudo vim /boot/uEnv.txt
+    cape_enable=bone_capemgr.enable_partno=BB-UART4,BB-UART2
+git clone project
+wget https://bootstrap.pypa.io/get-pip.py
+sudo python get-pip.py
+sudo pip install virtualenv
+virtualenv venv
+source venv/bin/activate
+pip install -r requirements.txt
+#Wiring diagram
+sudo apt-get install gpsd gpsd-clients python-gps
+sudo screen /dev/ttyO4 115200
+    AT
+    Ctrl-A :quit
+sudo wget -O /etc/ppp/peers/fona https://raw.githubusercontent.com/adafruit/FONA_PPP/master/fona
+sudo vim /etc/ppp/peers/fona
+    Ting APN: wholesale
+sudo pon fona
+sudo vim /etc/network/interfaces  # not working
+    auto fona
+    iface fona inet ppp
+        provider fona
+fona-startup.sh
+    /usr/bin/pon fona
+sudo crontab -e
+    @reboot fona-startup.sh
+# 14.04 doesn't have systemd
+sudo vim /etc/init/gps_tracker.conf
+    description "GPS Tracker"
+    start on runlevel [2345]
+    stop on runlevel [!2345]
+    respawn
+    exec /home/ecal/gps_tracker/venv/bin/python /home/ecal/gps_tracker/gps_tracker.py
+sudo service gps_tracker start
+
 
 ===========
 NOTES
 ===========
 wifi reset systemd service adafruit?
-bbb image service instead of systemd?
+bbb image service instead of systemd? ubuntu 14 v 15
+
+===========
+diskutil list
+sudo dd bs=1m if=/dev/rdisk3 of=~/Projects/2016/BBB/bbb_ubuntu-14_20160215.img
+sudo dd bs=1m if=~/Projects/2016/BBB/bbb_ubuntu-14_20160215.img of=/dev/rdisk3
