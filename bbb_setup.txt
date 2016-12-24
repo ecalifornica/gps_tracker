@@ -14,6 +14,7 @@ UBUNTU ON BBB
 Download image:
 http://elinux.org/BeagleBoardUbuntu#BeagleBone_White.2FBlack.2FGreen
 shasum -a 256 bone-etc.img.xz
+OSX: unxz bone-etc.img.xz
 
 Disk name:
 df -h
@@ -33,6 +34,8 @@ sudo mount /dev/sda2 /mnt/sd_card
 
 Set up Ubuntu
 =============
+Install drivers for OSX
+
 ssh ubuntu@192.168.7.2
 
 Expand filesystem:
